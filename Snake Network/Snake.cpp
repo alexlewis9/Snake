@@ -20,16 +20,17 @@ directions Snake::getDirection() const {
 	return direction;
 }
 
+void Snake::setDirection(directions direction) {
+	this->direction = direction;
+}
+
 void Snake::draw(sf::RenderWindow& window) {
 	for (Unit& unit : body) {
 		unit.draw(window);
 	}
 }
 
-void Snake::setDirection(directions direction) {
-	this->direction = direction;
-}
-// only move if valid
+// add next position, return true if game over (snake runs into self or out of bounds)
 bool Snake::step() {
 	Unit& previous = body.front();
 	Unit next(color);
@@ -52,8 +53,9 @@ bool Snake::step() {
 	if (!runIntoSelf && !outOfBounds) {
 		body.push_front(next);
 		length++;
+		return false;
 	}
-	return runIntoSelf || outOfBounds;
+	return true;
 }
 
 // return snake is touching other
@@ -65,7 +67,7 @@ bool Snake::touching(Unit& other) {
 	return false;
 }
 
-// only move if valid
+// only move if valid, return true if game over (run into self, out of bounds or fills grid)
 bool Snake::move(bool eatApple) {
 	bool invalidPosition = step();
 	if (!invalidPosition && !eatApple) {

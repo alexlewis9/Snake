@@ -18,7 +18,9 @@ void HighScoreManager::runGame() {
 		}
 		packet >> msg;
 		packet.clear();
+		// recieve score
 		if (msg.type == 0) {
+			// read high scores from file
 			ifstream inStream;
 			inStream.open("C:/Users/alexl/source/repos/Snake Network/scores.txt");
 			scores.assign(5, { "", 0 });
@@ -27,9 +29,10 @@ void HighScoreManager::runGame() {
 				inStream >> scores[i].second;
 			}
 			inStream.close();
-			if (msg.score > scores[4].second) {
+			if (msg.score > scores[4].second) { // if score is high score
 				mtx.lock();
 				scores[4].second = msg.score;
+				// send message to get name
 				msg.type = 1;
 				packet << msg;
 				socket->send(packet);
@@ -39,10 +42,12 @@ void HighScoreManager::runGame() {
 					mtx.unlock();
 					break;
 				}
+				// get name
 				packet >> msg;
 				packet.clear();
 				scores[4].first = msg.name;
 				sort(scores.begin(), scores.end(), &sortBySecond);
+				// write high scores to file
 				ofstream outStream;
 				outStream.open("C:/Users/alexl/source/repos/Snake Network/scores.txt");
 				for (int i = 0; i < 5; i++) {
@@ -51,6 +56,7 @@ void HighScoreManager::runGame() {
 				outStream.close();
 				mtx.unlock();
 			}
+			// send high scores
 			msg.type = 2;
 			msg.highScores = scores;
 			packet << msg;

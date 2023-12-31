@@ -13,10 +13,10 @@ private:
 	float speed;
 public:
 	Game();
+	int getScore() const;
 	void draw(sf::RenderWindow& window);
 	void updateDirection(const sf::Keyboard::Scan::Scancode& key);
 	bool update(const sf::Time& elapsed, const sf::Keyboard::Scan::Scancode& key);
-	int getScore() const;
 };
 
 #endif

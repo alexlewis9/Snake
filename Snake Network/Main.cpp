@@ -9,6 +9,7 @@ vector<sf::TcpSocket*> sockets;
 static void createAndRunHighScoreManager(sf::TcpSocket* socket) {
 	HighScoreManager highScoreManager(*socket);
 	highScoreManager.runGame();
+	// when client disconnected, remove and destroy socket
 	int indexOfSocket = -1;
 	for (int i = 0; i < sockets.size(); i++) {
 		if (sockets[i] == socket) {

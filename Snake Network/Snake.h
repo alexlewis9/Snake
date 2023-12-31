@@ -16,8 +16,8 @@ public:
 	std::list<Unit>& getBody();
 	int getLength() const;
 	directions getDirection() const;
-	void draw(sf::RenderWindow& window);
 	void setDirection(directions direction);
+	void draw(sf::RenderWindow& window);
 	bool step();
 	bool touching(Unit& other);
 	bool move(bool eatApple);

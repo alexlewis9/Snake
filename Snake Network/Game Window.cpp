@@ -2,7 +2,7 @@
 #include "Message.h"
 
 GameWindow::GameWindow(bool connectedToServer, sf::TcpSocket& socket) {
-	this->connectedToServer = connectedToServer;
+	this->connectedToServer = connectedToServer; // only do high scores if connected to server
 	this->socket = &socket;
 	window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Snake", sf::Style::Titlebar | sf::Style::Close);
 
@@ -63,15 +63,18 @@ void GameWindow::runGame() {
 			if (event.type == sf::Event::Closed) {
 				window.close();
 			}
-			else if (waitingOnName) {
+			else if (waitingOnName) { // player input name for high score
 				if (event.key.scancode == sf::Keyboard::Scan::Enter) {
+					// name can not be empty
 					if (!name.empty()) {
 						waitingOnName = false;
+						// send name
 						msg.type = 1;
 						msg.name = name;
 						packet << msg;
 						socket->send(packet);
 						packet.clear();
+						// recieve high scores
 						sf::Socket::Status status = socket->receive(packet);
 						if (status == sf::Socket::Disconnected) {
 							connectedToServer = false;
@@ -95,6 +98,7 @@ void GameWindow::runGame() {
 			else if (event.type == sf::Event::KeyPressed)
 			{
 				if (!gameRunning) {
+					// start game
 					if (firstGame) {
 						firstGame = false;
 						if (connectedToServer)
@@ -105,6 +109,7 @@ void GameWindow::runGame() {
 					clock.restart();
 				}
 			}
+			// pause game when window loses focus. resume when gain focus again
 			else if (event.type == sf::Event::LostFocus) {
 				paused = true;
 			}
@@ -124,6 +129,7 @@ void GameWindow::runGame() {
 				if (gameOver) {
 					soundEndGame.play();
 					currentScore = game.getScore();
+					// send score
 					msg.type = 0;
 					msg.score = currentScore;
 					packet << msg;
@@ -133,18 +139,20 @@ void GameWindow::runGame() {
 					if (status == sf::Socket::Disconnected) {
 						connectedToServer = false;
 					}
+					// recieve if need to get name or high scores
 					packet >> msg;
 					packet.clear();
-					if (msg.type == 1) {
+					if (msg.type == 1) { // need to get name for high score
 						name = string();
 						waitingOnName = true;
 					}
-					else if (msg.type == 2) {
+					else if (msg.type == 2) { // high scores
 						scores = &msg.highScores;
 					}
 					gameOver = false;
 				}
 				if (waitingOnName) {
+					// display message for player to input name, display name entered so far
 					window.draw(enterName);
 					highScoreNameText.setString(name);
 					highScoreNameText.setPosition(static_cast<float>((WINDOW_WIDTH - highScoreNameText.getGlobalBounds().width) / 2), static_cast<float>(WINDOW_HEIGHT / 2) + UNIT_SIZE);

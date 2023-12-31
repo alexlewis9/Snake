@@ -6,11 +6,16 @@ Game::Game() {
     speed = static_cast < float>(0.3);
 }
 
+int Game::getScore() const {
+    return snake.getLength();
+}
+
 void Game::draw(sf::RenderWindow& window) {
     apple.draw(window);
     snake.draw(window);
 }
 
+// can't change direction to opposite direction
 void Game::updateDirection(const sf::Keyboard::Scan::Scancode& key) {
     switch (key) {
     case sf::Keyboard::Scan::Up:
@@ -32,6 +37,7 @@ void Game::updateDirection(const sf::Keyboard::Scan::Scancode& key) {
     }
 }
 
+// check if snake touching apple, if so move apple and speed up game. move snake, return if game over.
 bool Game::update(const sf::Time& elapsed, const sf::Keyboard::Scan::Scancode& key) {
     if (elapsed - lastUpdate > sf::seconds(speed) && !gameOver) {
         updateDirection(key);
@@ -48,8 +54,4 @@ bool Game::update(const sf::Time& elapsed, const sf::Keyboard::Scan::Scancode& k
         lastUpdate = elapsed;
     }
     return gameOver;
-}
-
-int Game::getScore() const {
-    return snake.getLength();
 }
