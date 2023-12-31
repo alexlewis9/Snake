@@ -47,6 +47,7 @@ GameWindow::GameWindow(bool connectedToServer, sf::TcpSocket& socket) {
 	soundEndGame.setBuffer(bufferEndGame);
 }
 
+// returns when window closed
 void GameWindow::runGame() {
 	sf::RectangleShape line(sf::Vector2f(WINDOW_WIDTH, 2));
 	line.setPosition(0, UNIT_SIZE);

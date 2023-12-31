@@ -4,19 +4,10 @@
 #include <iostream>
 using namespace std;
 
-vector<sf::TcpSocket*> sockets;
-
 static void createAndRunHighScoreManager(sf::TcpSocket* socket) {
 	HighScoreManager highScoreManager(*socket);
-	highScoreManager.runGame();
-	// when client disconnected, remove and destroy socket
-	int indexOfSocket = -1;
-	for (int i = 0; i < sockets.size(); i++) {
-		if (sockets[i] == socket) {
-			indexOfSocket = i;
-		}
-	}
-	sockets.erase(sockets.begin() + indexOfSocket);
+	highScoreManager.runGame(); // returns when client disconnected
+	delete socket;
 }
 
 int main(int argc, char** argv) {
@@ -31,7 +22,6 @@ int main(int argc, char** argv) {
 		while (1) {
 			sf::TcpSocket* socket = new sf::TcpSocket();
 			if (listener.accept(*socket) == sf::Socket::Done) {
-				sockets.push_back(socket);
 				std::thread *threadObj = new std::thread(&createAndRunHighScoreManager, socket);
 			}
 		}

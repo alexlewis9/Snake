@@ -9,6 +9,7 @@ static bool sortBySecond(const pair<string, int>& a, const pair<string, int>& b)
 	return a.second > b.second;
 }
 
+// returns when client disconnected
 void HighScoreManager::runGame() {
 	while (1) {
 		message msg;
