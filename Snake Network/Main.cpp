@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
 		sf::TcpSocket socket;
 
-		sf::Socket::Status status = socket.connect("10.0.0.22", port);
+		sf::Socket::Status status = socket.connect(ipAddress, port);
 		if (status != sf::Socket::Done)
 		{
 			cout << "Error connecting to server";
